@@ -1,0 +1,20 @@
+version: "3.4"
+services:
+  server:
+    container_name: fivem-bare-windows
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        - SV_HOSTNAME=${DEV_SV_HOSTNAME}
+        - SV_LICENSEKEY=${DEV_SV_LICENSEKEY}
+        - STEAM_API_KEY=${DEV_STEAM_API_KEY}
+    image: fivem-bare
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./resources/[scripts]:C:/srv/resources/[scripts]
+      - ./cache:C:/srv/cache
+    ports:
+      - "${DEV_SV_PORT}:30120/tcp"
+      - "${DEV_SV_PORT}:30120/udp"

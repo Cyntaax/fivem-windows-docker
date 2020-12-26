@@ -1,0 +1,4 @@
+resources/
+!resources/package.json
+!resources/package-lock.json
+.git/
