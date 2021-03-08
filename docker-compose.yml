@@ -3,18 +3,26 @@ services:
   server:
     container_name: fivem-bare-windows
     build:
-      context: ./
+      context: ./fx
       dockerfile: Dockerfile
       args:
         - SV_HOSTNAME=${DEV_SV_HOSTNAME}
         - SV_LICENSEKEY=${DEV_SV_LICENSEKEY}
         - STEAM_API_KEY=${DEV_STEAM_API_KEY}
+        - MYSQL_USER=$MYSQL_USER
+        - MYSQL_PASSWORD=$MYSQL_PASSWORD
+        - MYSQL_DB=$MYSQL_DB
+        - MYSQL_PORT=$MYSQL_PORT
+        - MYSQL_HOST=$MYSQL_HOST
     image: fivem-bare
     stdin_open: true
     tty: true
     volumes:
-      - ./resources/[scripts]:C:/srv/resources/[scripts]
-      - ./cache:C:/srv/cache
+      - ./fx/resources/[scripts]:C:/srv/resources/[scripts]
+      - ./fx/cache:C:/srv/cache
+      - ./fx/txData:C:/txData
     ports:
       - "${DEV_SV_PORT}:30120/tcp"
       - "${DEV_SV_PORT}:30120/udp"
+      - 40120:40120
+      - "40120:40120/udp"

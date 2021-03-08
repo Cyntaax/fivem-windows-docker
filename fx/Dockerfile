@@ -3,6 +3,11 @@ FROM mcr.microsoft.com/windows/servercore:1809
 ARG SV_HOSTNAME
 ARG SV_LICENSEKEY
 ARG STEAM_API_KEY
+ARG MYSQL_USER
+ARG MYSQL_PASSWORD
+ARG MYSQL_DB
+ARG MYSQL_PORT
+ARG MYSQL_HOST
 
 RUN dism.exe /online /enable-feature /featurename:MicrosoftWindowsPowerShellRoot
 
@@ -10,7 +15,7 @@ RUN powershell mkdir C:\srv
 
 RUN powershell mkdir C:\temp
 
-RUN powershell Invoke-WebRequest -Uri "https://runtime.fivem.net/artifacts/fivem/build_server_windows/master/3184-6123f9196eb8cd2a987a1dd7ff7b36907a787962/server.zip" -OutFile "C:\\temp\\fx.zip"
+RUN powershell Invoke-WebRequest -Uri "https://runtime.fivem.net/artifacts/fivem/build_server_windows/master/3539-86d8fe5891dbdc38d43976e6a8afec97215530e8/server.zip" -OutFile "C:\\temp\\fx.zip"
 
 RUN powershell -Command Expand-Archive -LiteralPath C:/temp/fx.zip -DestinationPath C:/srv
 
@@ -40,7 +45,9 @@ COPY template.server_dev.cfg "C:\\srv\\template.server_dev.cfg"
 
 RUN .\envsubst.exe < template.server_dev.cfg > server.cfg
 
+COPY entrypoint.ps1 .
 
-ENTRYPOINT ["C:\\srv\\FXServer.exe"]
+COPY fix-hosts.ps1 C:\\fix-hosts.ps1
 
-CMD ["+exec", "C:\\srv\\server.cfg", "+set", "onesync_legacy"]
+
+ENTRYPOINT ["powershell", "C:\\srv\\entrypoint.ps1"]
